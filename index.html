@@ -1,0 +1,2371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Manager - Cadastro e Controle de Animais</title>
+  <meta name="description" content="Sistema de cadastro, controle de vacinas, vermífugos, medicamentos e acompanhamento de adoções com persistência local no dispositivo." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* RESET & BASE */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --primary-border: #c7d2fe;
+      
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-400: #94a3b8;
+      --slate-500: #64748b;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+
+      --emerald-50: #ecfdf5;
+      --emerald-100: #d1fae5;
+      --emerald-600: #059669;
+      --emerald-700: #047857;
+      --emerald-800: #065f46;
+
+      --amber-50: #fffbeb;
+      --amber-100: #fef3c7;
+      --amber-600: #d97706;
+      --amber-700: #b45309;
+
+      --rose-50: #fff1f2;
+      --rose-100: #ffe4e6;
+      --rose-200: #fecdd3;
+      --rose-600: #e11d48;
+      --rose-700: #be123c;
+      --rose-800: #9f1239;
+
+      --teal-50: #f0fdfa;
+      --teal-100: #ccfbf1;
+      --teal-600: #0d9488;
+      --teal-700: #0f766e;
+
+      --purple-50: #faf5ff;
+      --purple-100: #f3e8ff;
+      --purple-600: #9333ea;
+      --purple-700: #7e22ce;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 9999px;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+
+      --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: #f8fafc;
+      color: var(--slate-800);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* HEADER & NAVIGATION */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--slate-200);
+    }
+
+    .header-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 16px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--slate-900);
+      line-height: 1.1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-badge {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--slate-500);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 280px;
+    }
+
+    .nav-desktop {
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+
+    @media (min-width: 768px) {
+      .nav-desktop {
+        display: flex;
+      }
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--slate-600);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--slate-900);
+      background-color: var(--slate-100);
+    }
+
+    .nav-link.active {
+      color: var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    .nav-badge {
+      background-color: var(--rose-600);
+      color: white;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+      line-height: 1;
+    }
+
+    .btn-quick-add {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background-color: var(--primary);
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: var(--radius-md);
+      border: none;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: background-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-quick-add:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-quick-add:active {
+      transform: scale(0.97);
+    }
+
+    /* BOTTOM NAV (MOBILE) */
+    .nav-mobile {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      background-color: white;
+      border-top: 1px solid var(--slate-200);
+      justify-content: space-around;
+      padding: 8px 4px;
+    }
+
+    @media (min-width: 768px) {
+      .nav-mobile {
+        display: none;
+      }
+    }
+
+    .nav-mobile-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--slate-500);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    .nav-mobile-btn.active {
+      color: var(--primary);
+    }
+
+    /* MAIN CONTAINER & SECTIONS */
+    .main-content {
+      flex: 1;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 16px 80px 16px;
+    }
+
+    @media (min-width: 768px) {
+      .main-content {
+        padding: 32px 24px 40px 24px;
+      }
+    }
+
+    .app-section {
+      display: none;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .app-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* DASHBOARD HERO BANNER */
+    .hero-banner {
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      color: white;
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (min-width: 640px) {
+      .hero-banner {
+        padding: 32px;
+      }
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #c7d2fe;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .hero-title {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    @media (min-width: 640px) {
+      .hero-title {
+        font-size: 30px;
+      }
+    }
+
+    .hero-desc {
+      font-size: 14px;
+      color: var(--slate-300);
+      max-width: 650px;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn-hero-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background-color: #6366f1;
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      transition: background-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-hero-primary:hover {
+      background-color: #4f46e5;
+    }
+
+    .btn-hero-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .btn-hero-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* KPI CARDS GRID */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    @media (min-width: 640px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .kpi-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+
+    .kpi-card {
+      background-color: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .kpi-card:hover {
+      border-color: var(--primary-border);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .kpi-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--slate-500);
+    }
+
+    .kpi-icon-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .kpi-value-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .kpi-value {
+      font-size: 30px;
+      font-weight: 900;
+      color: var(--slate-900);
+      line-height: 1;
+    }
+
+    .kpi-subtext {
+      font-size: 12px;
+      color: var(--slate-500);
+      margin-top: 8px;
+      font-weight: 600;
+    }
+
+    /* 2 COLUMNS DASHBOARD LAYOUT */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 1024px) {
+      .dashboard-layout {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+
+    .card-panel {
+      background-color: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+    }
+
+    .card-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--slate-100);
+      margin-bottom: 16px;
+    }
+
+    .card-panel-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-panel-subtitle {
+      font-size: 12px;
+      color: var(--slate-500);
+      margin-top: 2px;
+    }
+
+    .link-action {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .link-action:hover {
+      text-decoration: underline;
+    }
+
+    /* STATUS ADOPTION GRID IN DASHBOARD */
+    .adoption-status-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .adoption-status-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .status-stat-box {
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      border: 1px solid transparent;
+    }
+
+    .status-stat-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+    }
+
+    .status-stat-number {
+      font-size: 26px;
+      font-weight: 900;
+      margin: 4px 0;
+      display: block;
+    }
+
+    .status-stat-desc {
+      font-size: 11px;
+      display: block;
+    }
+
+    /* PET LIST & FILTERS */
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 640px) {
+      .section-header {
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: var(--slate-900);
+    }
+
+    .page-desc {
+      font-size: 13px;
+      color: var(--slate-500);
+      margin-top: 2px;
+    }
+
+    .filter-card {
+      background-color: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .search-row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (min-width: 768px) {
+      .search-row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .search-input-wrapper {
+      position: relative;
+      flex: 1;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 16px 10px 42px;
+      font-size: 14px;
+      font-family: inherit;
+      background-color: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      color: var(--slate-800);
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .search-input:focus {
+      background-color: white;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--slate-400);
+      pointer-events: none;
+    }
+
+    .view-toggles {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background-color: var(--slate-100);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--slate-200);
+      align-self: flex-end;
+    }
+
+    @media (min-width: 768px) {
+      .view-toggles {
+        align-self: center;
+      }
+    }
+
+    .view-toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--slate-600);
+      background: none;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+
+    .view-toggle-btn.active {
+      background-color: white;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      padding-top: 12px;
+      border-top: 1px solid var(--slate-100);
+      font-size: 12px;
+    }
+
+    .select-filter {
+      padding: 6px 12px;
+      background-color: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-sm);
+      color: var(--slate-700);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .select-filter:hover {
+      background-color: var(--slate-100);
+    }
+
+    .btn-clear-filter {
+      background: none;
+      border: none;
+      color: var(--rose-600);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    .btn-clear-filter:hover {
+      text-decoration: underline;
+    }
+
+    /* PET CARDS GRID */
+    .pets-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 640px) {
+      .pets-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .pets-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .pet-card {
+      background-color: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s ease;
+    }
+
+    .pet-card:hover {
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary-border);
+      transform: translateY(-2px);
+    }
+
+    .pet-card-image-wrap {
+      position: relative;
+      height: 190px;
+      background-color: var(--slate-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .pet-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .pet-card:hover .pet-card-img {
+      transform: scale(1.04);
+    }
+
+    .badge-status {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      border: 1px solid transparent;
+      backdrop-filter: blur(4px);
+    }
+
+    .badge-alert-pill {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background-color: var(--rose-600);
+      color: white;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pet-card-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .pet-card-name {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--slate-900);
+      cursor: pointer;
+    }
+
+    .pet-card-name:hover {
+      color: var(--primary);
+    }
+
+    .pet-meta-row {
+      font-size: 12px;
+      color: var(--slate-500);
+      margin-top: 4px;
+    }
+
+    .pet-age-text {
+      font-size: 12px;
+      color: var(--slate-700);
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    .pet-care-summary {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--slate-100);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--slate-500);
+      font-weight: 600;
+    }
+
+    .pet-card-footer {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--slate-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .btn-view-profile {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      background-color: var(--primary-light);
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-view-profile:hover {
+      background-color: #e0e7ff;
+    }
+
+    .icon-action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-md);
+      background: none;
+      border: none;
+      color: var(--slate-400);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .icon-action-btn:hover {
+      color: var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    .icon-action-btn.delete:hover {
+      color: var(--rose-600);
+      background-color: var(--rose-50);
+    }
+
+    /* PETS TABLE VIEW */
+    .table-container {
+      background-color: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-xl);
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .app-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .app-table th {
+      background-color: var(--slate-50);
+      color: var(--slate-600);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--slate-200);
+    }
+
+    .app-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--slate-100);
+      color: var(--slate-700);
+    }
+
+    .app-table tbody tr:hover {
+      background-color: var(--slate-50);
+    }
+
+    /* EMPTY STATES */
+    .empty-state {
+      background-color: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-xl);
+      padding: 48px 24px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .empty-state-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 16px auto;
+      color: var(--slate-300);
+    }
+
+    .empty-state-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--slate-800);
+    }
+
+    .empty-state-text {
+      font-size: 13px;
+      color: var(--slate-500);
+      margin: 6px auto 20px auto;
+      max-width: 420px;
+    }
+
+    /* ALERTS SECTION */
+    .alerts-kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 640px) {
+      .alerts-kpi-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .alert-summary-box {
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border: 1px solid transparent;
+    }
+
+    .alert-item-card {
+      background-color: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    @media (min-width: 640px) {
+      .alert-item-card {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .alert-item-card:hover {
+      border-color: var(--primary-border);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* PET DETAIL PAGE */
+    .pet-detail-header-card {
+      background-color: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .pet-detail-header-card {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+    }
+
+    .detail-avatar-wrap {
+      width: 140px;
+      height: 140px;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      background-color: var(--slate-100);
+      border: 2px solid var(--slate-200);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .detail-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .detail-info {
+      flex: 1;
+    }
+
+    .detail-name-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .detail-pet-name {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--slate-900);
+    }
+
+    .detail-tabs-nav {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--slate-200);
+      margin-bottom: 24px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .detail-tab-btn {
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--slate-600);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .detail-tab-btn:hover {
+      color: var(--slate-900);
+    }
+
+    .detail-tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* MODAL POPUPS */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background-color: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-window {
+      background-color: white;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      width: 100%;
+      max-width: 620px;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      animation: modalSlide 0.2s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--slate-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--slate-900);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--slate-400);
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--slate-700);
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--slate-100);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      background-color: var(--slate-50);
+      border-bottom-left-radius: var(--radius-xl);
+      border-bottom-right-radius: var(--radius-xl);
+    }
+
+    /* FORMS & INPUTS */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .form-row.two-cols {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .form-row.three-cols {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .form-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--slate-700);
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-family: inherit;
+      background-color: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      color: var(--slate-800);
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      background-color: white;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .btn-secondary {
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--slate-700);
+      background-color: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--slate-50);
+    }
+
+    .btn-primary {
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      color: white;
+      background-color: var(--primary);
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-danger {
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      color: white;
+      background-color: var(--rose-600);
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+
+    .btn-danger:hover {
+      background-color: var(--rose-700);
+    }
+
+    /* FOOTER */
+    .footer {
+      margin-top: auto;
+      background-color: white;
+      border-top: 1px solid var(--slate-200);
+      padding: 24px 16px;
+      font-size: 12px;
+      color: var(--slate-500);
+    }
+
+    .footer-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      text-align: center;
+    }
+
+    @media (min-width: 640px) {
+      .footer-container {
+        flex-direction: row;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABEÇALHO SUPERIOR -->
+  <header class="header">
+    <div class="header-container">
+      <!-- Logo e Identificação -->
+      <div id="btn-nav-brand" class="brand">
+        <div class="brand-icon">
+          <!-- Ícone Pata Pet SVG -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 20.04A3.5 3.5 0 0 1 5.5 15Z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">
+            Pet Manager
+            <span class="brand-badge">V1.0</span>
+          </div>
+          <div id="header-org-name" class="brand-subtitle">Meu Abrigo / Controle Pet</div>
+        </div>
+      </div>
+
+      <!-- Navegação Desktop -->
+      <nav class="nav-desktop">
+        <button id="nav-btn-dashboard" class="nav-link active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+          Dashboard
+        </button>
+        <button id="nav-btn-pets" class="nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 20.04A3.5 3.5 0 0 1 5.5 15Z"/></svg>
+          Animais
+        </button>
+        <button id="nav-btn-alerts" class="nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          Alertas
+          <span id="nav-alerts-badge" class="nav-badge" style="display: none;">0</span>
+        </button>
+        <button id="nav-btn-settings" class="nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          Configurações
+        </button>
+      </nav>
+
+      <!-- Ação Rápida Superior -->
+      <div>
+        <button id="btn-quick-new-pet" class="btn-quick-add">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Cadastrar Animal</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
+  <main class="main-content">
+
+    <!-- 1. SEÇÃO DASHBOARD -->
+    <section id="section-dashboard" class="app-section active">
+      <!-- Banner Hero -->
+      <div class="hero-banner">
+        <div class="hero-tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 20.04A3.5 3.5 0 0 1 5.5 15Z"/></svg>
+          Painel Geral de Controle
+        </div>
+        <h1 class="hero-title">Gestão e Acompanhamento de Animais</h1>
+        <p class="hero-desc">
+          Acompanhe o cadastro dos animais, vacinação, vermífugos, medicamentos ativos e o fluxo completo de adoções.
+        </p>
+        <div class="hero-actions">
+          <button id="hero-btn-add-pet" class="btn-hero-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Cadastrar Animal
+          </button>
+          <button id="hero-btn-view-pets" class="btn-hero-secondary">
+            Ver Animais Cadastrados →
+          </button>
+        </div>
+      </div>
+
+      <!-- Grade de Cards de Indicadores (KPIs) -->
+      <div class="kpi-grid">
+        <!-- Total de Animais -->
+        <div id="kpi-card-total" class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">Total de Animais</span>
+            <div class="kpi-icon-wrap" style="background-color: var(--primary-light); color: var(--primary);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 20.04A3.5 3.5 0 0 1 5.5 15Z"/></svg>
+            </div>
+          </div>
+          <div>
+            <div class="kpi-value-wrap">
+              <span id="kpi-val-total" class="kpi-value">0</span>
+              <span class="kpi-subtext">cadastrados</span>
+            </div>
+            <p class="kpi-subtext" style="color: var(--primary);">Ver listagem completa →</p>
+          </div>
+        </div>
+
+        <!-- Vacinas em Alerta -->
+        <div id="kpi-card-vaccines" class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">Vacinas em Alerta</span>
+            <div class="kpi-icon-wrap" style="background-color: var(--rose-100); color: var(--rose-700);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+          </div>
+          <div>
+            <div class="kpi-value-wrap">
+              <span id="kpi-val-vaccines" class="kpi-value">0</span>
+              <span id="kpi-val-vaccines-sub" class="kpi-subtext">em alerta</span>
+            </div>
+            <p id="kpi-val-vaccines-desc" class="kpi-subtext">Controle em dia</p>
+          </div>
+        </div>
+
+        <!-- Vermífugos -->
+        <div id="kpi-card-dewormers" class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">Vermífugos</span>
+            <div class="kpi-icon-wrap" style="background-color: var(--teal-100); color: var(--teal-700);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+          </div>
+          <div>
+            <div class="kpi-value-wrap">
+              <span id="kpi-val-dewormers" class="kpi-value">0</span>
+              <span class="kpi-subtext">a aplicar</span>
+            </div>
+            <p class="kpi-subtext" style="color: var(--teal-700);">Atrasados ou próximos</p>
+          </div>
+        </div>
+
+        <!-- Medicamentos Ativos -->
+        <div id="kpi-card-medications" class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">Medicamentos</span>
+            <div class="kpi-icon-wrap" style="background-color: var(--amber-100); color: var(--amber-700);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>
+            </div>
+          </div>
+          <div>
+            <div class="kpi-value-wrap">
+              <span id="kpi-val-meds" class="kpi-value">0</span>
+              <span class="kpi-subtext">em uso ativo</span>
+            </div>
+            <p class="kpi-subtext" style="color: var(--amber-700);">Tratamentos contínuos</p>
+          </div>
+        </div>
+
+        <!-- Adoções Concluídas -->
+        <div id="kpi-card-adoptions" class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">Adoções</span>
+            <div class="kpi-icon-wrap" style="background-color: var(--emerald-100); color: var(--emerald-700);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            </div>
+          </div>
+          <div>
+            <div class="kpi-value-wrap">
+              <span id="kpi-val-adopted" class="kpi-value" style="color: var(--emerald-700);">0</span>
+              <span class="kpi-subtext">adotados</span>
+            </div>
+            <p id="kpi-val-available" class="kpi-subtext" style="color: var(--emerald-700);">0 disponíveis para adoção</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estrutura em 2 Colunas do Dashboard -->
+      <div class="dashboard-layout">
+        <!-- Coluna Esquerda: Alertas Próximos e Status de Adoção -->
+        <div>
+          <!-- Painel Alertas de Saúde Próximos -->
+          <div class="card-panel">
+            <div class="card-panel-header">
+              <div>
+                <h2 class="card-panel-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose-600)" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  Alertas de Saúde Próximos
+                </h2>
+                <p class="card-panel-subtitle">Doses atrasadas ou vencendo nos próximos dias</p>
+              </div>
+              <button id="btn-dash-view-all-alerts" class="link-action">Ver todos →</button>
+            </div>
+
+            <!-- Lista Dinâmica de Alertas no Dashboard -->
+            <div id="dash-alerts-container">
+              <!-- Estado Vazio padrão -->
+              <div class="empty-state" style="padding: 32px 16px;">
+                <svg class="empty-state-icon" style="color: var(--emerald-600);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <div class="empty-state-title">Tudo em dia!</div>
+                <div class="empty-state-text">Nenhuma vacina ou vermífugo pendente ou atrasado no momento.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Painel de Controle de Adoção e Situação -->
+          <div class="card-panel">
+            <div class="card-panel-header">
+              <div>
+                <h2 class="card-panel-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  Controle de Adoção e Situação dos Animais
+                </h2>
+                <p class="card-panel-subtitle">Distribuição dos animais por status de permanência</p>
+              </div>
+            </div>
+
+            <div class="adoption-status-grid">
+              <div class="status-stat-box" style="background-color: var(--emerald-50); border-color: var(--emerald-100);">
+                <span class="status-stat-title" style="color: var(--emerald-800);">Disponíveis</span>
+                <span id="stat-count-available" class="status-stat-number" style="color: var(--emerald-700);">0</span>
+                <span class="status-stat-desc" style="color: var(--emerald-600);">Aguardando família</span>
+              </div>
+              <div class="status-stat-box" style="background-color: var(--amber-50); border-color: var(--amber-100);">
+                <span class="status-stat-title" style="color: var(--amber-800);">Em Processo</span>
+                <span id="stat-count-process" class="status-stat-number" style="color: var(--amber-700);">0</span>
+                <span class="status-stat-desc" style="color: var(--amber-600);">Visitas / Adaptação</span>
+              </div>
+              <div class="status-stat-box" style="background-color: var(--purple-50); border-color: var(--purple-100);">
+                <span class="status-stat-title" style="color: var(--purple-800);">Adotados</span>
+                <span id="stat-count-adopted" class="status-stat-number" style="color: var(--purple-700);">0</span>
+                <span class="status-stat-desc" style="color: var(--purple-600);">Com família definitiva</span>
+              </div>
+              <div class="status-stat-box" style="background-color: var(--rose-50); border-color: var(--rose-200);">
+                <span class="status-stat-title" style="color: var(--rose-800);">Em Tratamento</span>
+                <span id="stat-count-treatment" class="status-stat-number" style="color: var(--rose-700);">0</span>
+                <span class="status-stat-desc" style="color: var(--rose-600);">Recuperação clínica</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coluna Direita: Animais Recentes e Espécies -->
+        <div>
+          <!-- Últimos Animais Cadastrados -->
+          <div class="card-panel">
+            <div class="card-panel-header">
+              <h2 class="card-panel-title" style="font-size: 14px; text-transform: uppercase;">Últimos Cadastrados</h2>
+              <button id="btn-dash-view-all-pets" class="link-action">Ver todos</button>
+            </div>
+            <div id="dash-recent-pets-container">
+              <p style="font-size: 12px; color: var(--slate-500); text-align: center; padding: 24px 0;">
+                Nenhum animal cadastrado ainda.
+              </p>
+            </div>
+          </div>
+
+          <!-- Distribuição por Espécie -->
+          <div class="card-panel">
+            <div class="card-panel-header">
+              <h2 class="card-panel-title" style="font-size: 14px; text-transform: uppercase;">Distribuição por Espécie</h2>
+            </div>
+            <div id="dash-species-container" style="display: flex; flex-direction: column; gap: 14px;">
+              <!-- Barras de Espécies preenchidas dinamicamente -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. SEÇÃO LISTA DE ANIMAIS -->
+    <section id="section-pets" class="app-section">
+      <div class="section-header">
+        <div>
+          <h1 class="page-title">Animais Cadastrados</h1>
+          <p class="page-desc">Gerencie o cadastro, histórico de saúde e controle de adoções.</p>
+        </div>
+        <button id="btn-open-add-pet-modal" class="btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Cadastrar Novo Animal
+        </button>
+      </div>
+
+      <!-- Barra de Pesquisa, Filtros e Alternância de Visualização -->
+      <div class="filter-card">
+        <div class="search-row">
+          <div class="search-input-wrapper">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input id="input-search-pets" type="text" class="search-input" placeholder="Buscar por nome, raça, características, adotante..." />
+          </div>
+          <div class="view-toggles">
+            <button id="btn-toggle-cards" class="view-toggle-btn active">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+              Cards
+            </button>
+            <button id="btn-toggle-table" class="view-toggle-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              Tabela
+            </button>
+          </div>
+        </div>
+
+        <div class="filters-row">
+          <span style="font-weight: 800; color: var(--slate-600); display: flex; align-items: center; gap: 4px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            Filtros:
+          </span>
+
+          <select id="filter-species" class="select-filter">
+            <option value="all">Todas as Espécies</option>
+            <option value="Cachorro">Cachorros</option>
+            <option value="Gato">Gatos</option>
+            <option value="Ave">Aves</option>
+            <option value="Outro">Outras Espécies</option>
+          </select>
+
+          <select id="filter-status" class="select-filter">
+            <option value="all">Todas as Situações</option>
+            <option value="Disponível">Disponível para Adoção</option>
+            <option value="Em processo">Em Processo</option>
+            <option value="Adotado">Adotado</option>
+            <option value="Em tratamento">Em Tratamento</option>
+          </select>
+
+          <select id="filter-size" class="select-filter">
+            <option value="all">Todos os Portes</option>
+            <option value="Pequeno">Pequeno</option>
+            <option value="Médio">Médio</option>
+            <option value="Grande">Grande</option>
+          </select>
+
+          <select id="filter-sex" class="select-filter">
+            <option value="all">Todos os Sexos</option>
+            <option value="Macho">Macho</option>
+            <option value="Fêmea">Fêmea</option>
+          </select>
+
+          <button id="btn-clear-filters" class="btn-clear-filter" style="display: none;">Limpar Filtros</button>
+
+          <span id="pets-count-indicator" style="margin-left: auto; color: var(--slate-500); font-weight: 600;">
+            Exibindo 0 animais
+          </span>
+        </div>
+      </div>
+
+      <!-- Exibição em Cards -->
+      <div id="pets-cards-container" class="pets-grid">
+        <!-- Preenchido dinamicamente com os animais -->
+      </div>
+
+      <!-- Exibição em Tabela -->
+      <div id="pets-table-container" class="table-container" style="display: none;">
+        <table class="app-table">
+          <thead>
+            <tr>
+              <th>Animal</th>
+              <th>Espécie / Raça</th>
+              <th>Sexo / Porte</th>
+              <th>Idade</th>
+              <th>Situação</th>
+              <th>Saúde / Doses</th>
+              <th style="text-align: right;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="pets-table-tbody">
+            <!-- Linhas preenchidas dinamicamente -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. SEÇÃO DETALHES E HISTÓRICO DO ANIMAL -->
+    <section id="section-pet-detail" class="app-section">
+      <!-- Botão Voltar -->
+      <div style="margin-bottom: 16px;">
+        <button id="btn-back-to-pets" class="link-action" style="font-size: 13px;">
+          ← Voltar para a Lista de Animais
+        </button>
+      </div>
+
+      <!-- Card Cabeçalho do Animal -->
+      <div class="pet-detail-header-card">
+        <div class="detail-avatar-wrap">
+          <img id="detail-pet-photo" class="detail-avatar-img" src="" alt="Foto do animal" style="display: none;" />
+          <svg id="detail-pet-placeholder" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--slate-300)" stroke-width="1.5"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 20.04A3.5 3.5 0 0 1 5.5 15Z"/></svg>
+        </div>
+
+        <div class="detail-info">
+          <div class="detail-name-row">
+            <div>
+              <h1 id="detail-pet-name" class="detail-pet-name">Nome do Animal</h1>
+              <p id="detail-pet-meta" style="font-size: 13px; color: var(--slate-500); margin-top: 2px;">
+                Cachorro • Sem raça definida • Macho • Porte Médio
+              </p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button id="btn-edit-current-pet" class="btn-secondary" style="display: inline-flex; align-items: center; gap: 6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                Editar
+              </button>
+              <button id="btn-delete-current-pet" class="btn-secondary" style="color: var(--rose-600); display: inline-flex; align-items: center; gap: 6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                Excluir
+              </button>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px;">
+            <span id="detail-status-badge" class="badge-status" style="position: static;">Disponível</span>
+            <span id="detail-age-badge" style="font-size: 12px; font-weight: 700; color: var(--slate-700); background: var(--slate-100); padding: 4px 10px; border-radius: var(--radius-full);">Idade: 2 anos</span>
+          </div>
+
+          <p id="detail-pet-notes" style="font-size: 13px; color: var(--slate-600); margin-top: 14px; line-height: 1.5;">
+            Observações e histórico do animal...
+          </p>
+        </div>
+      </div>
+
+      <!-- Abas de Navegação Interna da Ficha -->
+      <div class="detail-tabs-nav">
+        <button id="tab-btn-vaccines" class="detail-tab-btn active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Vacinas (<span id="count-tab-vaccines">0</span>)
+        </button>
+        <button id="tab-btn-dewormers" class="detail-tab-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Vermífugos (<span id="count-tab-dewormers">0</span>)
+        </button>
+        <button id="tab-btn-medications" class="detail-tab-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>
+          Medicamentos (<span id="count-tab-meds">0</span>)
+        </button>
+        <button id="tab-btn-care" class="detail-tab-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          Consultas e Cuidados (<span id="count-tab-care">0</span>)
+        </button>
+        <button id="tab-btn-adoption" class="detail-tab-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+          Adoção e Tutor
+        </button>
+      </div>
+
+      <!-- Conteúdo da Aba 1: Vacinas -->
+      <div id="tab-content-vaccines">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h2 style="font-size: 16px; font-weight: 800;">Histórico de Vacinação</h2>
+            <p style="font-size: 12px; color: var(--slate-500);">Doses aplicadas e agendamentos de reforço</p>
+          </div>
+          <button id="btn-add-vaccine" class="btn-primary" style="font-size: 12px; padding: 8px 14px;">+ Registrar Vacina</button>
+        </div>
+        <div id="vaccines-list-container">
+          <!-- Lista de vacinas gerada dinamicamente -->
+        </div>
+      </div>
+
+      <!-- Conteúdo da Aba 2: Vermífugos -->
+      <div id="tab-content-dewormers" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h2 style="font-size: 16px; font-weight: 800;">Histórico de Vermífugos</h2>
+            <p style="font-size: 12px; color: var(--slate-500);">Aplicações de antiparasitários e próximas doses</p>
+          </div>
+          <button id="btn-add-dewormer" class="btn-primary" style="font-size: 12px; padding: 8px 14px;">+ Registrar Vermífugo</button>
+        </div>
+        <div id="dewormers-list-container">
+          <!-- Lista de vermífugos gerada dinamicamente -->
+        </div>
+      </div>
+
+      <!-- Conteúdo da Aba 3: Medicamentos -->
+      <div id="tab-content-medications" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h2 style="font-size: 16px; font-weight: 800;">Tratamentos e Remédios</h2>
+            <p style="font-size: 12px; color: var(--slate-500);">Medicamentos contínuos, dosagens e horários</p>
+          </div>
+          <button id="btn-add-medication" class="btn-primary" style="font-size: 12px; padding: 8px 14px;">+ Registrar Medicamento</button>
+        </div>
+        <div id="medications-list-container">
+          <!-- Lista de remédios gerada dinamicamente -->
+        </div>
+      </div>
+
+      <!-- Conteúdo da Aba 4: Consultas e Procedimentos -->
+      <div id="tab-content-care" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h2 style="font-size: 16px; font-weight: 800;">Consultas, Cirurgias e Cuidados</h2>
+            <p style="font-size: 12px; color: var(--slate-500);">Histórico de castração, exames clínicos e higiene</p>
+          </div>
+          <button id="btn-add-care" class="btn-primary" style="font-size: 12px; padding: 8px 14px;">+ Registrar Procedimento</button>
+        </div>
+        <div id="care-list-container">
+          <!-- Lista de procedimentos gerada dinamicamente -->
+        </div>
+      </div>
+
+      <!-- Conteúdo da Aba 5: Controle de Adoção -->
+      <div id="tab-content-adoption" style="display: none;">
+        <div class="card-panel" style="max-width: 650px;">
+          <h2 class="card-panel-title" style="margin-bottom: 16px;">Situação de Adoção</h2>
+          <form id="form-adoption-status" class="modal-body" style="padding: 0;">
+            <div class="form-group">
+              <label for="adoption-status-select" class="form-label">Status Atual do Animal</label>
+              <select id="adoption-status-select" class="form-select">
+                <option value="Disponível">Disponível para Adoção</option>
+                <option value="Em processo">Em Processo de Adoção / Visitas</option>
+                <option value="Adotado">Adotado Definitivamente</option>
+                <option value="Em tratamento">Em Tratamento Clínico</option>
+              </select>
+            </div>
+
+            <div id="adopter-fields-group" style="display: none; border-top: 1px solid var(--slate-100); padding-top: 16px; margin-top: 8px;">
+              <h3 style="font-size: 14px; font-weight: 800; color: var(--slate-800); margin-bottom: 12px;">Dados do Adotante / Tutor Responsável</h3>
+              
+              <div class="form-group" style="margin-bottom: 12px;">
+                <label for="adopter-name" class="form-label">Nome Completo do Adotante</label>
+                <input id="adopter-name" type="text" class="form-input" placeholder="Ex: Maria dos Santos" />
+              </div>
+
+              <div class="form-row two-cols" style="margin-bottom: 12px;">
+                <div class="form-group">
+                  <label for="adopter-phone" class="form-label">Telefone / WhatsApp</label>
+                  <input id="adopter-phone" type="text" class="form-input" placeholder="(00) 00000-0000" />
+                </div>
+                <div class="form-group">
+                  <label for="adopter-email" class="form-label">E-mail</label>
+                  <input id="adopter-email" type="email" class="form-input" placeholder="exemplo@email.com" />
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 12px;">
+                <label for="adopter-address" class="form-label">Endereço / Cidade</label>
+                <input id="adopter-address" type="text" class="form-input" placeholder="Rua, Bairro, Cidade - UF" />
+              </div>
+
+              <div class="form-group">
+                <label for="adopter-notes" class="form-label">Observações do Termo de Adoção</label>
+                <textarea id="adopter-notes" class="form-textarea" placeholder="Número do termo assinado, data de entrega, observações..."></textarea>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px;">
+              <button type="submit" class="btn-primary">Salvar Status de Adoção</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. SEÇÃO CENTRAL DE ALERTAS -->
+    <section id="section-alerts" class="app-section">
+      <div class="section-header">
+        <div>
+          <h1 class="page-title">Central de Alertas e Notificações</h1>
+          <p class="page-desc">Acompanhe vacinas vencidas ou a vencer, prazos de vermífugos e ciclos de medicação.</p>
+        </div>
+      </div>
+
+      <!-- Resumo Rápido dos Alertas -->
+      <div class="alerts-kpi-grid">
+        <div class="alert-summary-box" style="background-color: var(--rose-50); border-color: var(--rose-200);">
+          <div class="kpi-icon-wrap" style="background-color: var(--rose-600); color: white;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div>
+            <span class="status-stat-title" style="color: var(--rose-800);">Atrasados / Vencidos</span>
+            <span id="alert-summary-overdue" class="status-stat-number" style="color: var(--rose-900);">0</span>
+            <span class="status-stat-desc" style="color: var(--rose-700);">Exigem aplicação imediata</span>
+          </div>
+        </div>
+
+        <div class="alert-summary-box" style="background-color: var(--amber-50); border-color: var(--amber-100);">
+          <div class="kpi-icon-wrap" style="background-color: var(--amber-600); color: white;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <span class="status-stat-title" style="color: var(--amber-800);">Vencem em até 7 dias</span>
+            <span id="alert-summary-urgent" class="status-stat-number" style="color: var(--amber-900);">0</span>
+            <span class="status-stat-desc" style="color: var(--amber-700);">Agendar para esta semana</span>
+          </div>
+        </div>
+
+        <div class="alert-summary-box" style="background-color: #eff6ff; border-color: #bfdbfe;">
+          <div class="kpi-icon-wrap" style="background-color: #2563eb; color: white;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div>
+            <span class="status-stat-title" style="color: #1e40af;">Próximos (8 a 30 dias)</span>
+            <span id="alert-summary-upcoming" class="status-stat-number" style="color: #1e3a8a;">0</span>
+            <span class="status-stat-desc" style="color: #1d4ed8;">Programados no calendário</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros de Alertas -->
+      <div class="filter-card" style="margin-bottom: 20px;">
+        <div class="filters-row" style="border: none; padding: 0;">
+          <span style="font-weight: 800; color: var(--slate-600);">Filtrar Alertas:</span>
+          <select id="filter-alert-type" class="select-filter">
+            <option value="all">Todos os Cuidados</option>
+            <option value="Vacina">Apenas Vacinas</option>
+            <option value="Vermífugo">Apenas Vermífugos</option>
+            <option value="Medicamento">Apenas Medicamentos</option>
+          </select>
+
+          <select id="filter-alert-urgency" class="select-filter">
+            <option value="all">Todas as Urgências</option>
+            <option value="overdue">Apenas Atrasados</option>
+            <option value="urgent">Próximos 7 dias</option>
+            <option value="upcoming">Próximos 30 dias</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Lista Principal de Alertas -->
+      <div id="alerts-full-list-container">
+        <!-- Preenchido dinamicamente -->
+      </div>
+    </section>
+
+    <!-- 5. SEÇÃO CONFIGURAÇÕES & BACKUP -->
+    <section id="section-settings" class="app-section">
+      <div class="section-header">
+        <div>
+          <h1 class="page-title">Configurações do Aplicativo</h1>
+          <p class="page-desc">Personalize preferências, prazos de alertas e gerencie backups locais dos seus dados.</p>
+        </div>
+      </div>
+
+      <!-- Painel de Preferências -->
+      <div class="card-panel" style="max-width: 720px;">
+        <div class="card-panel-header">
+          <h2 class="card-panel-title">Preferências Gerais</h2>
+        </div>
+        <form id="form-settings-general" class="modal-body" style="padding: 0;">
+          <div class="form-group">
+            <label for="settings-org-input" class="form-label">Nome do Abrigo, ONG ou Responsável</label>
+            <input id="settings-org-input" type="text" class="form-input" placeholder="Ex: Abrigo Patinhas Felizes / Controle Pessoal" />
+          </div>
+          <div class="form-group">
+            <label for="settings-threshold-select" class="form-label">Dias de Antecedência para Alertas Próximos</label>
+            <select id="settings-threshold-select" class="form-select">
+              <option value="7">7 dias (1 semana)</option>
+              <option value="15" selected>15 dias (~2 semanas)</option>
+              <option value="30">30 dias (~1 mês)</option>
+              <option value="60">60 dias (2 meses)</option>
+            </select>
+            <span style="font-size: 11px; color: var(--slate-500);">Doses que vencerem dentro deste prazo aparecerão em destaque no Dashboard.</span>
+          </div>
+          <div style="margin-top: 12px;">
+            <button type="submit" class="btn-primary">Salvar Preferências</button>
+            <span id="settings-save-feedback" style="display: none; color: var(--emerald-600); font-size: 12px; font-weight: 700; margin-left: 12px;">
+              Preferências salvas com sucesso!
+            </span>
+          </div>
+        </form>
+      </div>
+
+      <!-- Painel Backup e Exportação -->
+      <div class="card-panel" style="max-width: 720px;">
+        <div class="card-panel-header">
+          <h2 class="card-panel-title">Backup e Restauração de Dados</h2>
+        </div>
+        <p style="font-size: 13px; color: var(--slate-600); line-height: 1.6; margin-bottom: 20px;">
+          Todos os seus dados são salvos localmente no seu dispositivo via IndexedDB. Você pode exportar um arquivo de cópia de segurança em formato JSON para guardar em local seguro ou transferir para outro aparelho.
+        </p>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <button id="btn-export-backup" class="btn-secondary" style="background-color: var(--slate-900); color: white; border: none; display: inline-flex; align-items: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exportar Backup (.JSON)
+          </button>
+          
+          <input id="input-import-file" type="file" accept=".json,application/json" style="display: none;" />
+          <button id="btn-trigger-import" class="btn-secondary" style="display: inline-flex; align-items: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Importar / Restaurar Backup (.JSON)
+          </button>
+        </div>
+        <div id="import-status-box" style="display: none; padding: 12px; border-radius: var(--radius-md); font-size: 12px; margin-top: 16px;"></div>
+      </div>
+
+      <!-- Painel de Limpeza de Dados -->
+      <div class="card-panel" style="max-width: 720px; border-color: var(--rose-200);">
+        <div class="card-panel-header">
+          <h2 class="card-panel-title" style="color: var(--rose-700);">Limpeza da Base de Dados Local</h2>
+        </div>
+        <p style="font-size: 13px; color: var(--slate-600); line-height: 1.6; margin-bottom: 20px;">
+          Esta ação apaga permanentemente todos os registros de animais, vacinas, vermífugos e tratamentos salvos no banco local deste dispositivo.
+        </p>
+        <button id="btn-clear-database" class="btn-danger" style="display: inline-flex; align-items: center; gap: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          Limpar Todos os Registros do Dispositivo
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: CADASTRAR / EDITAR ANIMAL -->
+  <div id="modal-pet" class="modal-backdrop">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h2 id="modal-pet-title" class="modal-title">Cadastrar Novo Animal</h2>
+        <button id="modal-pet-close" class="modal-close-btn">&times;</button>
+      </div>
+      <form id="form-pet">
+        <div class="modal-body">
+          <input type="hidden" id="pet-form-id" value="" />
+
+          <div class="form-group">
+            <label for="pet-name-input" class="form-label">Nome do Animal *</label>
+            <input id="pet-name-input" type="text" class="form-input" placeholder="Ex: Thor, Mel, Bob" required />
+          </div>
+
+          <div class="form-row two-cols">
+            <div class="form-group">
+              <label for="pet-species-select" class="form-label">Espécie *</label>
+              <select id="pet-species-select" class="form-select" required>
+                <option value="Cachorro">Cachorro</option>
+                <option value="Gato">Gato</option>
+                <option value="Ave">Ave</option>
+                <option value="Outro">Outra Espécie</option>
+              </select>
+            </div>
+            <div id="custom-species-wrap" class="form-group" style="display: none;">
+              <label for="pet-custom-species-input" class="form-label">Especifique a Espécie *</label>
+              <input id="pet-custom-species-input" type="text" class="form-input" placeholder="Ex: Coelho, Furão" />
+            </div>
+            <div class="form-group">
+              <label for="pet-breed-input" class="form-label">Raça</label>
+              <input id="pet-breed-input" type="text" class="form-input" placeholder="Ex: SRD (Vira-lata), Labrador, Siamês" />
+            </div>
+          </div>
+
+          <div class="form-row two-cols">
+            <div class="form-group">
+              <label for="pet-sex-select" class="form-label">Sexo *</label>
+              <select id="pet-sex-select" class="form-select" required>
+                <option value="Macho">Macho</option>
+                <option value="Fêmea">Fêmea</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="pet-size-select" class="form-label">Porte *</label>
+              <select id="pet-size-select" class="form-select" required>
+                <option value="Pequeno">Pequeno</option>
+                <option value="Médio" selected>Médio</option>
+                <option value="Grande">Grande</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row two-cols">
+            <div class="form-group">
+              <label for="pet-birth-input" class="form-label">Data de Nascimento (se souber)</label>
+              <input id="pet-birth-input" type="date" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label for="pet-approx-age-input" class="form-label">Ou Idade Aproximada</label>
+              <input id="pet-approx-age-input" type="text" class="form-input" placeholder="Ex: 2 anos e 3 meses" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="pet-color-input" class="form-label">Cor e Características Marcantes</label>
+            <input id="pet-color-input" type="text" class="form-input" placeholder="Ex: Preto com mancha branca no peito" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Foto do Animal</label>
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <input id="pet-photo-file" type="file" accept="image/*" class="form-input" style="padding: 6px;" />
+              <input id="pet-photo-url" type="hidden" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="pet-notes-input" class="form-label">Histórico e Observações Gerais</label>
+            <textarea id="pet-notes-input" class="form-textarea" placeholder="Temperamento, local de resgate, comportamento..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-cancel-pet" class="btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar Animal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: REGISTRAR VACINA -->
+  <div id="modal-vaccine" class="modal-backdrop">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h2 id="modal-vaccine-title" class="modal-title">Registrar Vacina</h2>
+        <button id="modal-vaccine-close" class="modal-close-btn">&times;</button>
+      </div>
+      <form id="form-vaccine">
+        <div class="modal-body">
+          <input type="hidden" id="vaccine-id" value="" />
+          <div class="form-group">
+            <label for="vac-name" class="form-label">Nome da Vacina *</label>
+            <input id="vac-name" type="text" class="form-input" placeholder="Ex: V10, Antirrábica, Giárdiase, Quíntupla Felina" required />
+          </div>
+          <div class="form-row two-cols">
+            <div class="form-group">
+              <label for="vac-date" class="form-label">Data de Aplicação *</label>
+              <input id="vac-date" type="date" class="form-input" required />
+            </div>
+            <div class="form-group">
+              <label for="vac-next-date" class="form-label">Próxima Dose / Reforço</label>
+              <input id="vac-next-date" type="date" class="form-input" />
+            </div>
+          </div>
+          <div class="form-row two-cols">
+            <div class="form-group">
+              <label for="vac-batch" class="form-label">Lote / Fabricante</label>
+              <input id="vac-batch" type="text" class="form-input" placeholder="Ex: Lote A482 Zoetis" />
+            </div>
+            <div class="form-group">
+              <label for="vac-vet" class="form-label">Veterinário / Clínica</label>
+              <input id="vac-vet" type="text" class="form-input" placeholder="Dr(a) ou Clínica" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="vac-notes" class="form-label">Observações</label>
+            <textarea id="vac-notes" class="form-textarea" placeholder="Reações, recomendações..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-cancel-vaccine" class="btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar Vacina</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: REGISTRAR VERMÍFUGO -->
+  <div id="modal-dewormer" class="modal-backdrop">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h2 id="modal-dewormer-title" class="modal-title">Registrar Vermífugo</h2>
+        <button id="modal-dewormer-close" class="modal-close-btn">&times;</button>
+      </div>
+      <form id="form-dewormer">
+        <div class="modal-body">
+          <input type="hidden" id="dewormer-id" value="" />
+          <div class="form-group">
+            <label for="dew-product" class="form-label">Nome do Medicamento / Produto *</label>
+            <input id="dew-product" type="text" class="form-input" placeholder="Ex: Drontal Plus, Endogard, Chemital" required />
+          </div>
+          <div class="form-row two-cols">
+            <div class="form-group">
+              <label for="dew-date" class="form-label">Data da Aplicação *</label>
+              <input id="dew-date" type="date" class="form-input" required />
+            </div>
+            <div class="form-group">
+              <label for="dew-next-date" class="form-label">Próxima Aplicação Recomendada</label>
+              <input id="dew-next-date" type="date" class="form-input" />
+            </div>
+          </div>
+          <div class="form-row two-cols">
+            <div class="form-group">
+              <label for="dew-weight" class="form-label">Peso na Data (kg)</label>
+              <input id="dew-weight" type="number" step="0.1" class="form-input" placeholder="Ex: 8.5" />
+            </div>
+            <div class="form-group">
+              <label for="dew-dose" class="form-label">Dosagem Administrada</label>
+              <input id="dew-dose" type="text" class="form-input" placeholder="Ex: 1 comprimido" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-cancel-dewormer" class="btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar Vermífugo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: REGISTRAR MEDICAMENTO -->
+  <div id="modal-medication" class="modal-backdrop">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h2 id="modal-medication-title" class="modal-title">Registrar Medicamento</h2>
+        <button id="modal-medication-close" class="modal-close-btn">&times;</button>
+      </div>
+      <form id="form-medication">
+        <div class="modal-body">
+          <input type="hidden" id="medication-id" value="" />
+          <div class="form-group">
+            <label for="med-name" class="form-label">Nome do Medicamento *</label>
+            <input id="med-name" type="text" class="form-input" placeholder="Ex: Amoxicilina, Prednisolona, Apoquel" required />
+          </div>
+          <div class="form-row two-cols">
+            <div class="form-group">
+              <label for="med-dosage" class="form-label">Dosagem *</label>
+              <input id="med-dosage" type="text" class="form-input" placeholder="Ex: 1 comprimido, 5ml" required />
+            </div>
+            <div class="form-group">
+              <label for="med-freq" class="form-label">Frequência *</label>
+              <input id="med-freq" type="text" class="form-input" placeholder="Ex: A cada 12 horas, 1x ao dia" required />
+            </div>
+          </div>
+          <div class="form-row two-cols">
+            <div class="form-group">
+              <label for="med-start-date" class="form-label">Data de Início *</label>
+              <input id="med-start-date" type="date" class="form-input" required />
+            </div>
+            <div class="form-group">
+              <label for="med-end-date" class="form-label">Data de Término</label>
+              <input id="med-end-date" type="date" class="form-input" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="med-status" class="form-label">Status do Tratamento</label>
+            <select id="med-status" class="form-select">
+              <option value="Ativo">Ativo (Em tratamento contínuo)</option>
+              <option value="Concluído">Concluído</option>
+              <option value="Suspenso">Suspenso</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-cancel-medication" class="btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar Medicamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: REGISTRAR CONSULTAS E PROCEDIMENTOS -->
+  <div id="modal-care" class="modal-backdrop">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h2 id="modal-care-title" class="modal-title">Registrar Cuidado / Procedimento</h2>
+        <button id="modal-care-close" class="modal-close-btn">&times;</button>
+      </div>
+      <form id="form-care">
+        <div class="modal-body">
+          <input type="hidden" id="care-id" value="" />
+          <div class="form-group">
+            <label for="care-category" class="form-label">Categoria do Procedimento *</label>
+            <select id="care-category" class="form-select" required>
+              <option value="Consulta">Consulta Veterinária Geral</option>
+              <option value="Cirurgia">Cirurgia / Castração</option>
+              <option value="Exame">Exame Laboratorial / Raio-X</option>
+              <option value="Higiene">Higiene / Banho & Tosa</option>
+              <option value="Outro">Outro Procedimento</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="care-title" class="form-label">Título / Descrição Curta *</label>
+            <input id="care-title" type="text" class="form-input" placeholder="Ex: Castração realizada com sucesso, Limpeza de tártaro" required />
+          </div>
+          <div class="form-row two-cols">
+            <div class="form-group">
+              <label for="care-date" class="form-label">Data do Procedimento *</label>
+              <input id="care-date" type="date" class="form-input" required />
+            </div>
+            <div class="form-group">
+              <label for="care-vet" class="form-label">Veterinário / Clínica</label>
+              <input id="care-vet" type="text" class="form-input" placeholder="Dr(a) ou Clínica" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="care-notes" class="form-label">Observações Clínicas e Orientações</label>
+            <textarea id="care-notes" class="form-textarea" placeholder="Cuidados pós-operatórios, retirada de pontos, laudos..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-cancel-care" class="btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar Cuidado</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
+  <div id="modal-confirm" class="modal-backdrop">
+    <div class="modal-window" style="max-width: 440px;">
+      <div class="modal-header">
+        <h2 id="confirm-title" class="modal-title">Confirmar Ação</h2>
+        <button id="confirm-close" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-message" style="font-size: 13px; color: var(--slate-600); line-height: 1.6;">
+          Deseja realmente prosseguir com esta ação?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-cancel-confirm" class="btn-secondary">Cancelar</button>
+        <button id="btn-execute-confirm" class="btn-danger">Sim, Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVEGAÇÃO INFERIOR FIXA (MOBILE) -->
+  <div class="nav-mobile">
+    <button id="mob-btn-dashboard" class="nav-mobile-btn active">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+      <span>Início</span>
+    </button>
+    <button id="mob-btn-pets" class="nav-mobile-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 20.04A3.5 3.5 0 0 1 5.5 15Z"/></svg>
+      <span>Animais</span>
+    </button>
+    <button id="mob-btn-alerts" class="nav-mobile-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      <span>Alertas</span>
+    </button>
+    <button id="mob-btn-settings" class="nav-mobile-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span>Ajustes</span>
+    </button>
+  </div>
+
+  <!-- RODAPÉ -->
+  <footer class="footer">
+    <div class="footer-container">
+      <p>
+        <strong>Pet Manager</strong> • Sistema de Cadastro, Cuidados e Controle de Adoção de Animais
+      </p>
+      <p style="color: var(--slate-400);">
+        Versão 1.0 • Armazenamento local seguro e backup exportável
+      </p>
+    </div>
+  </footer>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
